@@ -1,14 +1,27 @@
--- Table structure for transactions
-CREATE TABLE IF NOT EXISTS transactions (
+DROP TABLE IF EXISTS user_levels;
+CREATE TABLE IF NOT EXISTS user_levels (
   id TEXT PRIMARY KEY,
-  subscriber_id TEXT,
-  amount INT DEFAULT 0,
-  payment_method TEXT,
-  payment_account TEXT,
-  confirmation_code TEXT,
-  status BOOLEAN DEFAULT FALSE,
-  created_by TEXT,
+  name TEXT,
+  level INT DEFAULT '0',
+  description TEXT,
   created_at TIMESTAMP,
+  created_by TEXT,
+  updated_at TIMESTAMP,
   updated_by TEXT,
-  updated_at TIMESTAMP
+  UNIQUE (name)
+);
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE IF NOT EXISTS users (
+  id TEXT PRIMARY KEY,
+  name TEXT,
+  phone TEXT,
+  building_id TEXT,
+  user_level_id TEXT,
+  password TEXT,
+  created_at TIMESTAMP,
+  created_by TEXT,
+  updated_at TIMESTAMP,
+  updated_by TEXT,
+  UNIQUE (phone)
 );

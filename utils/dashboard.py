@@ -9,5 +9,5 @@ class Dashboard():
                 
     def __call__(self):
          
-        return render_template('dashboard/index.html', page_title='Dashboard'
+        return render_template('dashboard.html', page_title='Dashboard'
                                )
