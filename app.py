@@ -8,6 +8,7 @@ from redis import Redis
 from utils.dashboard import Dashboard
 from utils.login import Login
 from utils.postgres_db import PostgresDb
+from utils.register import Register
 from utils.settings.system_users import SystemUsers
 
 # Load environment variables from .env file
@@ -52,6 +53,10 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     return Login(db)()
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    return Register(db)()
 
 @app.route('/logout')
 @login_required

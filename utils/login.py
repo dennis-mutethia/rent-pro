@@ -24,11 +24,6 @@ class Login():
             error = 'Login failed! Phone & Password do not match or Phone does not exist.'
             return render_template('login.html', error=error)
     
-    def register(self):           
-        phone = request.form['phone']
-        password = request.form['password']
-        return redirect(url_for('dashboard'))         
-    
     def reset_password(self):
         phone = request.form['phone']
         password = str(random.randint(1000, 9999))
@@ -38,9 +33,7 @@ class Login():
      
     def __call__(self):
         if request.method == 'POST':
-            if request.form['action'] == 'register':
-                return self.register()
-            elif request.form['action'] == 'login':
+            if request.form['action'] == 'login':
                 return self.login()
             elif request.form['action'] == 'reset_password':
                 return self.reset_password()
