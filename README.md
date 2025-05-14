@@ -58,9 +58,16 @@ Get RentPro up and running locally for development or testing.
 3. **Set Up Environment Variables**:
   - Create a .env file in backend/ based on .env.example:
   ```env
-  DATABASE_URL=postgresql://user:password@localhost:5432/rentpro
-  SECRET_KEY=your-secret-key
-  API_KEY=your-api-key
+  IS_DEBUG=True
+  DB_HOST=aws-0-eu-central-1.pooler.supabase.com
+  DB_PORT=6543
+  DB_NAME=postgres
+  DB_USER=postgres.xxxxxx
+  DB_PASSWORD=xxxxxxxxx
+  REDIS_HOSTNAME=xxxxxx-xxxxx-xx.upstash.io
+  REDIS_PORT=6379
+  REDIS_PASSWORD=xxxxxxxxxx
+  REDIS_SSL=True
   ```
 
 5. **Initialize the Database**:

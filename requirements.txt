@@ -1,0 +1,10 @@
+apscheduler
+Flask
+Flask-Login
+flask-session
+psycopg2-binary
+python-dotenv
+pytz
+redis
+requests
+user-agents
