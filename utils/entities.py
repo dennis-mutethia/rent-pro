@@ -1,14 +1,14 @@
 from flask_login import UserMixin
 
 class User(UserMixin):
-    def __init__(self, id, name, phone, user_level, shop, company, license):  
+    def __init__(self, id, name, phone, user_level, company_id, landlord_id, property_id):  
         self.id = id
         self.name = name
         self.phone = phone
         self.user_level = user_level
-        self.shop = shop 
-        self.company = company 
-        self.license = license
+        self.company_id = company_id 
+        self.landlord_id = landlord_id 
+        self.property_id = property_id
 
 class UserLevel():
     def __init__(self, id, name, level, description):
@@ -16,3 +16,19 @@ class UserLevel():
         self.name = name
         self.level = level
         self.description = description 
+class Company():
+    def __init__(self, id, name, phone, landlords=0, properties=0, tenants=0):
+        self.id = id
+        self.name = name
+        self.phone = phone
+        self.landlords = landlords
+        self.properties = properties
+        self.tenants = tenants        
+class Landlord():
+    def __init__(self, id, name, phone, company_id=None, properties=0, tenants=0):
+        self.id = id
+        self.name = name
+        self.phone = phone
+        self.company_id = company_id
+        self.properties = properties
+        self.tenants = tenants

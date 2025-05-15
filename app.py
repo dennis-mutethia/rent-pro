@@ -5,7 +5,9 @@ from flask_login import LoginManager, logout_user, login_required
 from flask_session import Session
 from redis import Redis
 
+from utils.companies import Companies
 from utils.dashboard import Dashboard
+from utils.landlords import Landlords
 from utils.login import Login
 from utils.postgres_db import PostgresDb
 from utils.properties import Properties
@@ -74,6 +76,16 @@ def logout():
 @login_required
 def dashboard(): 
     return Dashboard(db)() 
+
+@app.route('/companies', methods=['GET', 'POST'])
+@login_required
+def companies(): 
+    return Companies(db)() 
+
+@app.route('/landlords', methods=['GET', 'POST'])
+@login_required
+def landlords(): 
+    return Landlords(db)() 
 
 @app.route('/properties', methods=['GET', 'POST'])
 @login_required

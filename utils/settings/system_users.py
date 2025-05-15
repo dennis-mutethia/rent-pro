@@ -4,10 +4,12 @@ from flask_login import current_user
 
 from utils.entities import User, UserLevel
 from utils.helper import Helper
+from utils.companies import Companies
 
 class SystemUsers():
     def __init__(self, db): 
         self.db = db
+        self.companies = Companies(self.db)
       
     def fetch_user_levels(self):
         self.db.ensure_connection()
@@ -44,7 +46,7 @@ class SystemUsers():
         self.db.ensure_connection()
         with self.db.conn.cursor() as cursor:
             query = """
-            SELECT id, name, phone, user_level_id, building_id
+            SELECT id, name, phone, user_level_id, password, company_id, landlord_id, property_id
             FROM users 
             WHERE building_id IN(
                 SELECT id FROM shops WHERE company_id = %s
@@ -57,10 +59,10 @@ class SystemUsers():
             users = []
             for datum in data:      
                 user_level = self.get_user_level_id(datum[3])
-                shop = None #MyShops(self.db).get_by_id(datum[4]) 
-                company = None #self.db.get_company_by_id(shop.company_id)
-                license = None #self.db.get_license_by_id(company.license_id)   
-                users.append(User(datum[0], datum[1], datum[2], user_level, shop, company, license))
+                company = self.companies.get_by_id(datum[5])
+                landlord = None 
+                property = None 
+                users.append(User(datum[0], datum[1], datum[2], user_level, company, landlord, property))
 
             return users 
                
@@ -68,7 +70,7 @@ class SystemUsers():
         self.db.ensure_connection()
         with self.db.conn.cursor() as cursor:
             query = """
-            SELECT id, name, phone, user_level_id, building_id
+            SELECT id, name, phone, user_level_id, password, company_id, landlord_id, property_id
             FROM users 
             WHERE id = %s 
             """
@@ -76,10 +78,10 @@ class SystemUsers():
             data = cursor.fetchone()
             if data:
                 user_level = self.get_user_level_id(data[3])
-                shop = None #MyShops(self.db).get_by_id(data[4])
-                company = None #self.db.get_company_by_id(shop.company_id)
-                license = None #self.db.get_license_by_id(company.license_id)   
-                return User(data[0], data[1], data[2], user_level, shop, company, license)
+                company = self.companies.get_by_id(data[5])
+                landlord = None 
+                property = None 
+                return User(data[0], data[1], data[2], user_level, company, landlord, property)
             else:
                 return None      
     
@@ -87,7 +89,7 @@ class SystemUsers():
         self.db.ensure_connection()
         with self.db.conn.cursor() as cursor:
             query = """
-            SELECT id, name, phone, user_level_id, building_id
+            SELECT id, name, phone, user_level_id, password, company_id, landlord_id, property_id
             FROM users 
             WHERE phone = %s 
             """
@@ -95,10 +97,10 @@ class SystemUsers():
             data = cursor.fetchone()
             if data:
                 user_level = self.get_user_level_id(data[3])
-                shop = None #MyShops(self.db).get_by_id(data[4])
-                company = None #self.db.get_company_by_id(shop.company_id)
-                license = None #self.db.get_license_by_id(company.license_id)   
-                return User(data[0], data[1], data[2], user_level, shop, company, license)
+                company = self.companies.get_by_id(data[5])
+                landlord = None 
+                property = None 
+                return User(data[0], data[1], data[2], user_level, company, landlord, property)
             else:
                 return None    
            
@@ -106,7 +108,7 @@ class SystemUsers():
         self.db.ensure_connection()
         with self.db.conn.cursor() as cursor:
             query = """
-            SELECT id, name, phone, user_level_id, building_id
+            SELECT id, name, phone, user_level_id, password, company_id, landlord_id, property_id
             FROM users 
             WHERE phone = %s AND password = %s 
             """
@@ -114,45 +116,46 @@ class SystemUsers():
             data = cursor.fetchone()
             if data:
                 user_level = self.get_user_level_id(data[3])
-                shop = None #MyShops(self.db).get_by_id(data[4])
-                company = None #self.db.get_company_by_id(shop.company_id)
-                license = None #self.db.get_license_by_id(company.license_id)   
-                return User(data[0], data[1], data[2], user_level, shop, company, license)
+                company = self.companies.get_by_id(data[5])
+                landlord = None 
+                property = None 
+                return User(data[0], data[1], data[2], user_level, company, landlord, property)
             else:
                 return None 
     
-    def create(self, id, name, phone, user_level_id, building_id, password):
+    def create(self, id, name, phone, password, user_level_id, company_id, landlord_id=None, property_id=None):
         self.db.ensure_connection()
         with self.db.conn.cursor() as cursor:
             query = """
-            INSERT INTO users(id, name, phone, user_level_id, building_id, password, created_at, created_by) 
-            VALUES(%s, %s, %s, %s, %s, %s, NOW(), 0)
-            ON CONFLICT (phone)
-                DO UPDATE SET 
-                    name=%s,
-                    user_level_id=%s,
-                    building_id=%s,
-                    updated_at=NOW()
-            RETURNING id
+            INSERT INTO users(id, name, phone, user_level_id, password, company_id, landlord_id, property_id, created_at, created_by) 
+            VALUES(%s, %s, %s, %s, %s, %s, %s, %s, NOW(), 0)
             """
-            cursor.execute(query, (id, name.upper(), phone, user_level_id, building_id, Helper().hash_password(password), name.upper(), user_level_id, building_id))
+            params = [id, name.upper(), phone, user_level_id, Helper().hash_password(password), company_id, landlord_id, property_id]
+            cursor.execute(query, tuple(params))
             self.db.conn.commit()
             return self.get_by_id(id)  
             
-    def update(self, user_id, name, phone, user_level_id, building_id, password):
+    def update(self, id, name, phone, user_level_id, company_id, landlord_id, property_id, password=None):
         self.db.ensure_connection()
         with self.db.conn.cursor() as cursor:
             query = """
             UPDATE users 
-            SET name = %s, phone = %s, user_level_id = %s, building_id = %s, updated_by = %s, updated_at=NOW()            
+            SET name=%s,
+                phone=%s,
+                user_level_id=%s,
+                company_id=%s,
+                landlord_id=%s,
+                property_id=%s,
+                updated_by=%s,
+                updated_at=NOW()       
             """
-            params = [name.upper(), phone, user_level_id, building_id, current_user.id]
+            params = [name.upper(), phone, user_level_id, company_id, landlord_id, property_id, current_user.id]  
             if password is not None:
-                query = query + ", password = %s"
+                query = query + ", password=%s"
                 params.append(Helper().hash_password(password))
             
             query = query + " WHERE id=%s"
-            params.append(user_id)
+            params.append(id)
             
             cursor.execute(query, tuple(params))
             self.db.conn.commit()
@@ -179,36 +182,3 @@ class SystemUsers():
             cursor.execute(query, (id,))
             self.db.conn.commit()
                
-    def __call__(self):                
-        if request.method == 'POST':       
-            if request.form['action'] == 'add':
-                user_id = str(uuid.uuid4())
-                name = request.form['name']
-                phone = request.form['phone']      
-                user_level_id = request.form['user_level_id']     
-                building_id = request.form['building_id']  
-                self.create(user_id, name, phone, user_level_id, building_id, password=phone)
-                   
-            if request.form['action'] == 'edit':
-                user_id = request.form['id']
-                name = request.form['name']
-                phone = request.form['phone']      
-                user_level_id = request.form['user_level_id']     
-                building_id = request.form['building_id']                     
-                self.update(user_id, name, phone, user_level_id, building_id, password=None)
-                
-            if request.form['action'] == 'reset_password':
-                phone = request.form['phone']                    
-                self.reset_password(phone, phone, current_user.id)                 
-                
-            elif request.form['action'] == 'delete':
-                user_id = request.form['id']
-                self.delete(user_id)
-                
-                
-        users = self.fetch() 
-        user_levels = self.fetch_user_levels()
-        company_shops = self.db.get_company_shops()
-            
-        return render_template('settings/system-users.html', page_title='System Users', helper=Helper(),
-                               users=users, user_levels=user_levels, company_shops=company_shops )
