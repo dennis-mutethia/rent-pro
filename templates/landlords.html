@@ -18,7 +18,6 @@
                 <tr
                     class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                     <th class="px-4 py-3">Landlord Name</th>
-                    <th class="px-4 py-3">Associated Company</th>
                     <th class="px-4 py-3">Properties</th>
                     <th class="px-4 py-3">Tenants</th>
                     <th class="px-4 py-3">Actions</th>
@@ -36,14 +35,6 @@
                                 </p>
                             </div>
                         </div>
-                    </td>
-                    <td class="px-4 py-3 text-sm items-center">
-                        <a href="{{ url_for('landlords', landlord_id=landlord.id) }}"
-                            class="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-full dark:text-white dark:bg-orange-600">
-                            {% for company in companies %}
-                                {{ company.name if company.id==landlord.company_id }}
-                            {% endfor %}
-                        </a>
                     </td>
                     <td class="px-4 py-3 text-sm items-center">
                         <a href="{{ url_for('landlords', landlord_id=landlord.id) }}"
@@ -138,15 +129,6 @@
                     <input
                         class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                         name="phone" placeholder="0712345678" type="number" required />
-                </label>
-                <label class="block text-sm">
-                    <span class="text-gray-700 dark:text-gray-400">Associated Company</span>
-                    <select name="company_id"
-                        class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-                        {% for company in companies %}
-                        <option value="{{ company.id }}" {{ 'selected' if company.id==company_id }} >{{ company.name }}</option>
-                        {% endfor %}
-                    </select>
                 </label>
             </div>
             <footer

@@ -48,13 +48,9 @@ class SystemUsers():
             query = """
             SELECT id, name, phone, user_level_id, password, company_id, landlord_id, property_id
             FROM users 
-            WHERE building_id IN(
-                SELECT id FROM shops WHERE company_id = %s
-            )
             """
-            params = [current_user.company.id]
             
-            cursor.execute(query, tuple(params))
+            cursor.execute(query)
             data = cursor.fetchall()
             users = []
             for datum in data:      

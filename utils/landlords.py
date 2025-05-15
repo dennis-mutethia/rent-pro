@@ -11,18 +11,15 @@ class Landlords():
         self.db = db
         self.companies = Companies(self.db)
             
-    def fetch(self, company_id=None):
+    def fetch(self):
         self.db.ensure_connection()
         with self.db.conn.cursor() as cursor:
             query = """
             SELECT id, name, phone, company_id
-            FROM landlords 
+            FROM landlords
+            WHERE company_id = %s 
             """
-            if company_id:
-                query += " WHERE company_id = %s"
-                cursor.execute(query, (company_id,))
-            else:
-                cursor.execute(query)
+            cursor.execute(query, (current_user.company.id,))
             data = cursor.fetchall()
             companies = []
             for datum in data:       
@@ -45,31 +42,30 @@ class Landlords():
             else:
                 return None      
     
-    def create(self, id, name, phone, company_id):
+    def create(self, id, name, phone):
         self.db.ensure_connection()
         with self.db.conn.cursor() as cursor:
             query = """
             INSERT INTO landlords(id, name, phone, company_id, created_at, created_by) 
-            VALUES(%s, %s, %s, %s, NOW(), 0)
+            VALUES(%s, %s, %s, %s, NOW(), %s)
             """
-            params = [id, name.upper(), phone, company_id]
+            params = [id, name.upper(), phone, current_user.company.id, current_user.id]
             cursor.execute(query, tuple(params))
             self.db.conn.commit()
             return self.get_by_id(id)  
             
-    def update(self, id, name, phone, company_id):
+    def update(self, id, name, phone):
         self.db.ensure_connection()
         with self.db.conn.cursor() as cursor:
             query = """
             UPDATE landlords 
             SET name=%s,
                 phone=%s,
-                company_id=%s,
                 updated_by=%s,
                 updated_at=NOW()  
             WHERE id=%s     
             """
-            params = [name.upper(), phone, company_id, current_user.id, id]
+            params = [name.upper(), phone, current_user.id, id]
             cursor.execute(query, tuple(params))  
             self.db.conn.commit()
                         
@@ -84,16 +80,14 @@ class Landlords():
             self.db.conn.commit()
                           
     def __call__(self):
-        company_id=request.args.get('company_id', None)
         if request.method == 'POST':
             if request.form['action'] == 'create':
                 name = request.form['name']
                 phone = request.form['phone']
-                new_company_id = request.form['company_id']
                 id = str(uuid.uuid4())
-                self.create(id, name, phone, new_company_id)
+                self.create(id, name, phone)
         
         return render_template('landlords.html', imgbb_key=os.getenv('IMGBB_API_KEY'),
-                               landlords=self.fetch(company_id), companies=self.companies.fetch(), company_id=company_id
+                               landlords=self.fetch()
                                )
                
