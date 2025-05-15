@@ -45,6 +45,11 @@ db = PostgresDb()
 def load_user(user_id):
     return SystemUsers(db).get_by_id(user_id)
 
+@app.errorhandler(404)
+def page_not_found(e):
+    # Redirect to a specific endpoint, like 'plans', or a custom 404 page
+    return redirect(url_for('login'), 302)
+
 # Routes
 @app.route('/')
 def index():

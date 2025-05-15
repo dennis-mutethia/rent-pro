@@ -1,17 +1,27 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="en">
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
     {% include 'head.html' %}
 
-<body class="bg-dark">
+    <body class="bg-dark">
 
-    <div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5" data-sidebartype="full" data-sidebar-position="absolute" data-header-position="absolute" data-boxed-layout="full" >
-        
-        {% block content %}
-        <!-- Default content goes here -->
-        {% endblock %}
-    </div>
+        <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }">
+            {% include 'aside.html' %}
+            
+            <div class="flex flex-col flex-1 w-full">
+                {% include 'header.html' %}
 
-    {% include 'footer.html' %}
-</body>
+                <main class="h-full overflow-y-auto">
+                    <div class="container px-6 mx-auto grid">
+
+                        {% block content %}
+                        <!-- Default content goes here -->
+                        {% endblock %}
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        {% include 'footer.html' %}
+    </body>
 
 </html>
