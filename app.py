@@ -8,6 +8,7 @@ from redis import Redis
 from utils.dashboard import Dashboard
 from utils.login import Login
 from utils.postgres_db import PostgresDb
+from utils.properties import Properties
 from utils.register import Register
 from utils.settings.system_users import SystemUsers
 
@@ -73,6 +74,11 @@ def logout():
 @login_required
 def dashboard(): 
     return Dashboard(db)() 
+
+@app.route('/properties', methods=['GET', 'POST'])
+@login_required
+def properties(): 
+    return Properties(db)() 
 
 if __name__ == '__main__':
     debug_mode = os.getenv('IS_DEBUG', 'False') in ['True', '1', 't']
