@@ -1,3 +1,4 @@
+import uuid
 from flask import render_template, request
 from flask_login import current_user
 
@@ -181,11 +182,12 @@ class SystemUsers():
     def __call__(self):                
         if request.method == 'POST':       
             if request.form['action'] == 'add':
+                user_id = str(uuid.uuid4())
                 name = request.form['name']
                 phone = request.form['phone']      
                 user_level_id = request.form['user_level_id']     
-                building_id = request.form['building_id']     
-                self.add(name, phone, user_level_id, building_id, password=phone)
+                building_id = request.form['building_id']  
+                self.create(user_id, name, phone, user_level_id, building_id, password=phone)
                    
             if request.form['action'] == 'edit':
                 user_id = request.form['id']

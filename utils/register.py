@@ -19,8 +19,7 @@ class Register():
             return render_template('register.html', error='Passwords do not match.')
         else:
             # Check if the phone number already exists
-            existing_user = SystemUsers(self.db).get_by_phone(phone)
-            if existing_user:
+            if SystemUsers(self.db).get_by_phone(phone):
                 return render_template('register.html', error='Phone number already exists.')
                         
             # Create a new user

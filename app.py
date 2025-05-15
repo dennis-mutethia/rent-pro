@@ -69,7 +69,6 @@ def logout():
 def dashboard(): 
     return Dashboard(db)() 
 
-
 if __name__ == '__main__':
     debug_mode = os.getenv('IS_DEBUG', 'False') in ['True', '1', 't']
     app.run(debug=debug_mode)
