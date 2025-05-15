@@ -20,6 +20,7 @@
                     <th class="px-4 py-3">Company Name</th>
                     <th class="px-4 py-3">Landlords</th>
                     <th class="px-4 py-3">Properties</th>
+                    <th class="px-4 py-3">House Units</th>
                     <th class="px-4 py-3">Tenants</th>
                     <th class="px-4 py-3">Actions</th>
                 </tr>
@@ -41,6 +42,12 @@
                         <a href="{{ url_for('landlords', company_id=company.id) }}"
                             class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
                             {{ company.landlords }}
+                        </a>
+                    </td>
+                    <td class="px-4 py-3 text-sm items-center">
+                        <a href="{{ url_for('landlords', company_id=company.id) }}"
+                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+                            {{ company.houses }}
                         </a>
                     </td>
                     <td class="px-4 py-3 text-sm items-center">
