@@ -81,6 +81,11 @@
                             class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">                            
                             {{ house.tenant_name }} - {{ house.tenant_phone }}
                         </a>
+                        {% else %}
+                        <a href="{{ url_for('properties', house_id=house.id) }}"
+                            class="px-2 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                            Book Now
+                        </a>
                         {% endif %}
                     </td>
                     <td class="px-4 py-3">
