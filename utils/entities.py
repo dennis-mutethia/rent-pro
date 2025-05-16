@@ -45,7 +45,14 @@ class Property():
         self.lr_no = lr_no
         self.image = image
         self.houses = houses
-        self.tenants = tenants    
+        self.tenants = tenants   
+        
+class HouseType():
+    def __init__(self, id, name, description, houses=0):
+        self.id = id
+        self.name = name
+        self.description = description
+        self.houses = houses 
 class House():
     def __init__(self, id, property_id, house_type_id, name, rent_amount, deposit_amount, status='VACANT', tenant_id=None, tenant_name=None, tenant_phone=None):
         self.id = id
@@ -59,12 +66,26 @@ class House():
         self.tenant_name = tenant_name
         self.tenant_phone = tenant_phone
         
-class HouseType():
-    def __init__(self, id, name, description, houses=0):
+class Tenant():
+    def __init__(self, id, name, phone, email, id_number, start_date, status='OCCUPIED', end_date=None, image=None, next_of_kin=None, next_of_kin_phone=None, house_id=None, house_name=None, property_id=None, property_name=None, location=None, town=None, county=None):
         self.id = id
         self.name = name
-        self.description = description
-        self.houses = houses
+        self.phone = phone
+        self.email = email
+        self.id_number = id_number
+        self.start_date = start_date
+        self.status = status
+        self.end_date = end_date
+        self.image = image
+        self.next_of_kin = next_of_kin
+        self.next_of_kin_phone = next_of_kin_phone
+        self.house_id = house_id
+        self.house_name = house_name
+        self.property_id = property_id
+        self.property_name = property_name
+        self.location = location
+        self.town = town
+        self.county = county
         
         
 

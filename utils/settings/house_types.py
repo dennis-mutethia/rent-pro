@@ -28,7 +28,6 @@ class HouseTypes():
             house_types = []
             for datum in data:      
                 house_types.append(HouseType(datum[0], datum[1], datum[2], datum[3]))
-            print(house_types)
             return house_types  
                
     def get_by_id(self, id):

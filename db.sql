@@ -44,13 +44,14 @@ CREATE TABLE IF NOT EXISTS properties (
 DROP TABLE IF EXISTS house_types;
 CREATE TABLE IF NOT EXISTS house_types (
   id TEXT PRIMARY KEY,
+  company_id TEXT,
   name TEXT,
   description TEXT,
   created_at TIMESTAMP,
   created_by TEXT,
   updated_at TIMESTAMP,
   updated_by TEXT,
-  UNIQUE (name)
+  UNIQUE (name, company_id)
 );
 
 DROP TABLE IF EXISTS houses;
@@ -59,7 +60,6 @@ CREATE TABLE IF NOT EXISTS houses (
   property_id TEXT,
   house_type_id TEXT,
   name TEXT,
-  description TEXT,
   rent_amount REAL DEFAULT '0',
   deposit_amount REAL DEFAULT '0',  
   created_at TIMESTAMP,
@@ -93,8 +93,6 @@ CREATE TABLE IF NOT EXISTS tenant_houses (
   house_id TEXT,
   start_date TIMESTAMP,
   end_date TIMESTAMP,
-  rent_amount REAL DEFAULT '0',
-  deposit_amount REAL DEFAULT '0',
   created_at TIMESTAMP,
   created_by TEXT,
   updated_at TIMESTAMP,

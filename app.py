@@ -15,6 +15,7 @@ from utils.properties import Properties
 from utils.register import Register
 from utils.settings.house_types import HouseTypes
 from utils.settings.system_users import SystemUsers
+from utils.tenants import Tenants
 
 # Load environment variables from .env file
 load_dotenv()
@@ -98,6 +99,11 @@ def properties():
 @login_required
 def houses(): 
     return Houses(db)() 
+
+@app.route('/tenants', methods=['GET', 'POST'])
+@login_required
+def tenants(): 
+    return Tenants(db)() 
 
 @app.route('/settings/house_types', methods=['GET', 'POST'])
 @login_required

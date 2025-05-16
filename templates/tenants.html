@@ -3,10 +3,10 @@
 {% block content %}
 <div class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
     <div class="flex items-center justify-between">
-        <h1>My House Units</h1>
+        <h1>My Tenants</h1>
         <button @click="openModal"
             class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-            Add New House Unit
+            Add New Tenant
         </button>
     </div>
 </div>
@@ -17,79 +17,93 @@
             <thead>
                 <tr
                     class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+                    <th class="px-4 py-3">Name</th>
+                    <th class="px-4 py-3">Contacts</th>
+                    <th class="px-4 py-3">Next of Kin</th>
                     <th class="px-4 py-3">House No.</th>
-                    <th class="px-4 py-3">Property Name</th>
                     <th class="px-4 py-3">Location</th>
-                    <th class="px-4 py-3">Rent Amount</th>
-                    <th class="px-4 py-3">Deposit AMount</th>
+                    <th class="px-4 py-3">Start Date</th>
+                    <th class="px-4 py-3">End Date</th>
                     <th class="px-4 py-3">Status</th>
-                    <th class="px-4 py-3">Tenant</th>
                     <th class="px-4 py-3">Actions</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                {% for house in houses %}
+                {% for tenant in tenants %}
                 <tr class="text-gray-700 dark:text-gray-400">
                     <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
                             <div>
-                                <p class="font-semibold">{{ house.name }}</p>
+                                <p class="font-semibold">{{ tenant.name }}</p>
                                 <p class="text-xs text-gray-600 dark:text-gray-400">
-                                    {% for house_type in house_types if house_type.id == house.house_type_id %}
-                                    {{ house_type.name }}
-                                    {% endfor %}
+                                    {{ tenant.id_number }}
                                 </p>
                             </div>
                         </div>
-                    </td>
-                    {% for property in properties if property.id == house.property_id %}
-                    <td class="px-4 py-3 text-sm items-center">
-                        <a href="{{ url_for('properties', landlord_id=property.landlord_id, property_id=property.id) }}"
-                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">                            
-                            {{ property.name }}
-                        </a>
                     </td>
                     <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
                             <div>
-                                <p class="font-semibold">{{ property.location }}</p>
+                                <p class="font-semibold">{{ tenant.phone }}</p>
                                 <p class="text-xs text-gray-600 dark:text-gray-400">
-                                    {{ property.town }} - {{ property.county }}
+                                    {{ tenant.email }}
                                 </p>
                             </div>
                         </div>
                     </td>
-                    {% endfor %}
-                    <td class="px-4 py-3 text-sm items-center">
-                        {{ house.rent_amount }}
+                    <td class="px-4 py-3">
+                        <div class="flex items-center text-sm">
+                            <div>
+                                <p class="font-semibold">{{ tenant.next_of_kin }}</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">
+                                    {{ tenant.next_of_kin_phone }}
+                                </p>
+                            </div>
+                        </div>
                     </td>
-                    <td class="px-4 py-3 text-sm items-center">
-                        {{ house.deposit_amount }}
+                    <td class="px-4 py-3">
+                        <div class="flex items-center text-sm">
+                            <div>
+                                <p class="font-semibold">{{ tenant.house_name }}</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">
+                                    {{ tenant.property_name }}
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center text-sm">
+                            <div>
+                                <p class="font-semibold">{{ tenant.location }}</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">
+                                    {{ tenant.town }} - {{ tenant.county }}
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        {{ tenant.start_date }}
+                    </td>
+                    <td class="px-4 py-3">
+                        {{ tenant.end_date if tenant.end_date else '--' }}
                     </td>
                     <td class="px-4 py-3 text-sm items-center">
                         <span
                             class="px-2 py-1 font-semibold leading-tight rounded-full
-                            {{ 'text-red-700 bg-red-100 dark:bg-red-700 dark:text-red-100' if house.status == 'VACANT' else '' }}
-                            {{ 'text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100' if house.status == 'OCCUPIED' else '' }}
+                            {{ 'text-red-700 bg-red-100 dark:bg-red-700 dark:text-red-100' if tenant.status == 'OCCUPIED' else '' }}
+                            {{ 'text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100' if tenant.status == 'VACATED' else '' }}
                             ">                            
-                            {{ house.status }}
+                            {{ tenant.status }}
                     </span>
-                    </td>
-                    <td class="px-4 py-3 text-sm items-center">
-                        {% if house.tenant_id %}
-                        <a href="{{ url_for('properties', tenant_id=house.tenant_id) }}"
-                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">                            
-                            {{ house.tenant_name }} - {{ house.tenant_phone }}
-                        </a>
-                        {% else %}
-                        <a href="{{ url_for('properties', house_id=house.id) }}"
-                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-orange-100 rounded-lg dark:text-white dark:bg-orange-600 transition-colors duration-150 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                            Book Now
-                        </a>
-                        {% endif %}
                     </td>
                     <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
+                            {% if tenant.house_id %}
+                            <a href="{{ url_for('properties', tenant_id=tenant.id) }}"
+                                class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:bg-red-700 dark:text-red-100">                            
+                                VACATE
+                            </a>
+                            {% endif %}
                             <button
                                 class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
                                 aria-label="Edit">
@@ -147,45 +161,66 @@
             <div class="mt-4 mb-6">
                 <!-- Modal title -->
                 <p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                    Create New House Unit
+                    Create New Tenant
                 </p>
                 <!-- Modal description -->
+
+                <label id="image-upload" class="block text-sm">
+                    <span class="text-gray-700 dark:text-gray-400">Property Picture</span>
+
+                    <form id="upload-form" method="POST" action="https://api.imgbb.com/1/upload?key={{ imgbb_key }}"
+                        enctype="multipart/form-data">
+                        <input
+                            class="block w-full pr-20 mt-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
+                            type="file" name="image" accept="image/*" onchange="uploadImage()" />
+                    </form>
+                </label>
                 <form method="POST">
-                    <label class="block text-sm">
-                        <span class="text-gray-700 dark:text-gray-400">Property Name</span>
-                        <select name="property_id"
-                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
-                            {% for property in properties %}
-                            <option value="{{ property.id }}" {{ 'selected' if request.args.get('property_id')==property.id }}>{{ property.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </label>
-                    <label class="block text-sm">
-                        <span class="text-gray-700 dark:text-gray-400">House Type</span>
-                        <select name="house_type_id"
-                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
-                            {% for house_type in house_types %}
-                            <option value="{{ house_type.id }}" {{ 'selected' if request.args.get('house_type_id')==house_type.id }}>{{ house_type.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </label>
+                    <input type="hidden" name="image" id="img_url" value="" />
                     <label class="block text-sm">
                         <span class="text-gray-700 dark:text-gray-400">House No.</span>
-                        <input
-                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            name="name" placeholder="House No." required />
+                        <select name="house_id"
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+                            {% for house in houses %}
+                            <option value="{{ house.id }}" {{ 'selected' if request.args.get('house_id')==house.id }}>{{ house.name }}</option>
+                            {% endfor %}
+                        </select>
                     </label>
                     <label class="block text-sm">
-                        <span class="text-gray-700 dark:text-gray-400">Rent Amount</span>
+                        <span class="text-gray-700 dark:text-gray-400">Tenant Name</span>
                         <input
                             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            name="rent_amount" placeholder="Amount e.g 10000" type="number" required />
+                            name="name" placeholder="Tenant Name" required />
                     </label>
                     <label class="block text-sm">
-                        <span class="text-gray-700 dark:text-gray-400">Deposit Amount</span>
+                        <span class="text-gray-700 dark:text-gray-400">Tenant Id No.</span>
                         <input
                             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            name="deposit_amount" placeholder="Amount e.g 10000" type="number" required />
+                            name="id_number" placeholder="Tenant Id No." required />
+                    </label>
+                    <label class="block text-sm">
+                        <span class="text-gray-700 dark:text-gray-400">Phone No.</span>
+                        <input
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                            name="phone" placeholder="e.g 0712345678" type="number" required />
+                    </label>
+                    <label class="block text-sm">
+                        <span class="text-gray-700 dark:text-gray-400">Tenant Email</span>
+                        <input
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                            name="email" placeholder="Tenant Email" />
+                    </label>
+                    <label class="block text-sm">
+                        <span class="text-gray-700 dark:text-gray-400">Next of Kin Name</span>
+                        <input
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                            name="next_of_kin" placeholder="Next of Kin Name" />
+                    </label>
+                    <label class="block text-sm">
+                        <span class="text-gray-700 dark:text-gray-400">Next of Kin Phone No.</span>
+                        <input
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                            name="next_of_kin_phone" placeholder="e.g 0712345678" type="number" />
                     </label>
             </div>
             <footer
