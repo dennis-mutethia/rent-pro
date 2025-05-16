@@ -85,13 +85,13 @@
                         {{ tenant.start_date }}
                     </td>
                     <td class="px-4 py-3">
-                        {{ tenant.end_date if tenant.end_date else '--' }}
+                        {{ tenant.end_date if tenant.end_date else '' }}
                     </td>
                     <td class="px-4 py-3 text-sm items-center">
                         <span
                             class="px-2 py-1 font-semibold leading-tight rounded-full
-                            {{ 'text-red-700 bg-red-100 dark:bg-red-700 dark:text-red-100' if tenant.status == 'OCCUPIED' else '' }}
-                            {{ 'text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100' if tenant.status == 'VACATED' else '' }}
+                            {{ 'text-red-700 bg-red-100 dark:bg-red-700 dark:text-red-100' if tenant.status == 'VACATED' else '' }}
+                            {{ 'text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100' if tenant.status == 'OCCUPIED' else '' }}
                             ">                            
                             {{ tenant.status }}
                     </span>
