@@ -27,15 +27,15 @@ class SystemUsers():
 
             return user_levels 
         
-    def get_user_level_id(self, id):
+    def get_user_level(self, level):
         self.db.ensure_connection()
         with self.db.conn.cursor() as cursor:
             query = """
             SELECT id, name, level, description
             FROM user_levels 
-            WHERE id = %s 
+            WHERE level = %s 
             """
-            cursor.execute(query, (id,))
+            cursor.execute(query, (level,))
             data = cursor.fetchone()
             if data:
                 return UserLevel(data[0], data[1], data[2], data[3])
@@ -54,7 +54,7 @@ class SystemUsers():
             data = cursor.fetchall()
             users = []
             for datum in data:      
-                user_level = self.get_user_level_id(datum[3])
+                user_level = self.get_user_level(datum[3])
                 company = self.companies.get_by_id(datum[5])
                 landlord = None 
                 property = None 
@@ -73,7 +73,7 @@ class SystemUsers():
             cursor.execute(query, (id,))
             data = cursor.fetchone()
             if data:
-                user_level = self.get_user_level_id(data[3])
+                user_level = self.get_user_level(data[3])
                 company = self.companies.get_by_id(data[5])
                 landlord = None 
                 property = None 
@@ -92,7 +92,7 @@ class SystemUsers():
             cursor.execute(query, (phone,))
             data = cursor.fetchone()
             if data:
-                user_level = self.get_user_level_id(data[3])
+                user_level = self.get_user_level(data[3])
                 company = self.companies.get_by_id(data[5])
                 landlord = None 
                 property = None 
@@ -111,7 +111,7 @@ class SystemUsers():
             cursor.execute(query, (phone, Helper().hash_password(password)))
             data = cursor.fetchone()
             if data:
-                user_level = self.get_user_level_id(data[3])
+                user_level = self.get_user_level(data[3])
                 company = self.companies.get_by_id(data[5])
                 landlord = None 
                 property = None 
