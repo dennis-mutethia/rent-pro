@@ -203,30 +203,6 @@
         </div>
     </div>
 </div>
-<script>
-    function uploadImage() {
-        const $form = $('#upload-form');
-        const formData = new FormData($form[0]);
-        console.log(formData);
-
-        $.ajax({
-            url: $form.attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                $('#img_url').val(data.data.display_url);
-                $('#image-upload').html(
-                    `<img class="object-cover w-12 h-full rounded-full" src="${data.data.display_url}" alt="${data.data.title}" loading="lazy" />`
-                );
-            },
-            error: function (error) {
-                console.error('Error:', error);
-            }
-        });
-    }
-</script>
 <!-- End of modal backdrop -->
 
 {% endblock %}
