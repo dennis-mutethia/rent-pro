@@ -77,12 +77,12 @@
                     </td>
                     <td class="px-4 py-3 text-sm items-center">
                         {% if house.tenant_id %}
-                        <a href="{{ url_for('properties', tenant_id=house.tenant_id) }}"
+                        <a href="{{ url_for('tenants', tenant_id=house.tenant_id) }}"
                             class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">                            
                             {{ house.tenant_name }} - {{ house.tenant_phone }}
                         </a>
                         {% else %}
-                        <a href="{{ url_for('properties', house_id=house.id) }}"
+                        <a href="{{ url_for('houses', house_id=house.id) }}"
                             class="px-2 py-1 font-semibold leading-tight text-green-700 bg-orange-100 rounded-lg dark:text-white dark:bg-orange-600 transition-colors duration-150 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                             Book Now
                         </a>

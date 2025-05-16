@@ -18,7 +18,7 @@ class Properties():
             WITH t AS(
                 SELECT house_id, COUNT(id) AS tenants
                 FROM tenant_houses
-                WHERE DATE(end_date) <= CURRENT_DATE
+                WHERE DATE(end_date) <= CURRENT_DATE OR end_date IS NULL
                 GROUP BY house_id
             ),
             h AS(

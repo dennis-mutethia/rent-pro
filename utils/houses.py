@@ -18,9 +18,12 @@ class Houses():
         with self.db.conn.cursor() as cursor:
             query = """
             WITH th AS(
-                SELECT house_id, tenant_id, 'OCCUPIED' AS status
+                SELECT house_id, tenant_id, 
+                    CASE 
+                        WHEN DATE(end_date) < CURRENT_DATE THEN 'VACANT' 
+                        ELSE 'OCCUPIED' 
+                    END AS status
                 FROM tenant_houses
-                WHERE DATE(end_date) <= CURRENT_DATE
             ),
             t AS(
                 SELECT house_id, tenant_id, status, name, phone
