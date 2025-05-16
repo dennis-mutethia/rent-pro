@@ -7,11 +7,13 @@ from redis import Redis
 
 from utils.companies import Companies
 from utils.dashboard import Dashboard
+from utils.houses import Houses
 from utils.landlords import Landlords
 from utils.login import Login
 from utils.postgres_db import PostgresDb
 from utils.properties import Properties
 from utils.register import Register
+from utils.settings.house_types import HouseTypes
 from utils.settings.system_users import SystemUsers
 
 # Load environment variables from .env file
@@ -91,6 +93,16 @@ def landlords():
 @login_required
 def properties(): 
     return Properties(db)() 
+
+@app.route('/houses', methods=['GET', 'POST'])
+@login_required
+def houses(): 
+    return Houses(db)() 
+
+@app.route('/settings/house_types', methods=['GET', 'POST'])
+@login_required
+def house_types(): 
+    return HouseTypes(db)() 
 
 if __name__ == '__main__':
     debug_mode = os.getenv('IS_DEBUG', 'False') in ['True', '1', 't']

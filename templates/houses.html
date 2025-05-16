@@ -3,10 +3,10 @@
 {% block content %}
 <div class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
     <div class="flex items-center justify-between">
-        <h1>My Properties</h1>
+        <h1>My House Units</h1>
         <button @click="openModal"
             class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-            Add New Property
+            Add New House Unit
         </button>
     </div>
 </div>
@@ -17,31 +17,37 @@
             <thead>
                 <tr
                     class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+                    <th class="px-4 py-3">House No.</th>
                     <th class="px-4 py-3">Property Name</th>
                     <th class="px-4 py-3">Location</th>
-                    <th class="px-4 py-3">Landlord</th>
-                    <th class="px-4 py-3">House Units</th>
-                    <th class="px-4 py-3">Tenants</th>
+                    <th class="px-4 py-3">Rent Amount</th>
+                    <th class="px-4 py-3">Deposit AMount</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">Tenant</th>
                     <th class="px-4 py-3">Actions</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                {% for property in properties %}
+                {% for house in houses %}
                 <tr class="text-gray-700 dark:text-gray-400">
                     <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
-                            <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                <img class="object-cover w-full h-full rounded-full"
-                                    src="{{ property.image }}" alt="{{ property.name }}" loading="lazy" />
-                                <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
-                            </div>
                             <div>
-                                <p class="font-semibold">{{ property.name }}</p>
+                                <p class="font-semibold">{{ house.name }}</p>
                                 <p class="text-xs text-gray-600 dark:text-gray-400">
-                                    {{ property.lr_no }}
+                                    {% for house_type in house_types if house_type.id == house.house_type_id %}
+                                    {{ house_type.name }}
+                                    {% endfor %}
                                 </p>
                             </div>
                         </div>
+                    </td>
+                    {% for property in properties if property.id == house.property_id %}
+                    <td class="px-4 py-3 text-sm items-center">
+                        <a href="{{ url_for('properties', landlord_id=property.landlord_id, property_id=property.id) }}"
+                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">                            
+                            {{ property.name }}
+                        </a>
                     </td>
                     <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
@@ -53,25 +59,29 @@
                             </div>
                         </div>
                     </td>
+                    {% endfor %}
                     <td class="px-4 py-3 text-sm items-center">
-                        <a href="{{ url_for('properties', landlord_id=property.landlord_id) }}"
-                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                            {% for landlord in landlords if landlord.id == property.landlord_id %}
-                            {{ landlord.name }}
-                            {% endfor %}
-                        </a>
+                        {{ house.rent_amount }}
                     </td>
                     <td class="px-4 py-3 text-sm items-center">
-                        <a href="{{ url_for('houses', property_id=property.id) }}"
-                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                            {{ property.houses }}
-                        </a>
+                        {{ house.deposit_amount }}
                     </td>
                     <td class="px-4 py-3 text-sm items-center">
-                        <a href="{{ url_for('landlords', property_id=property.id) }}"
-                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                            {{ property.tenants }}
+                        <span
+                            class="px-2 py-1 font-semibold leading-tight rounded-full
+                            {{ 'text-red-700 bg-red-100 dark:bg-red-700 dark:text-red-100' if house.status == 'VACANT' else '' }}
+                            {{ 'text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100' if house.status == 'OCCUPIED' else '' }}
+                            ">                            
+                            {{ house.status }}
+                    </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm items-center">
+                        {% if house.tenant_id %}
+                        <a href="{{ url_for('properties', tenant_id=house.tenant_id) }}"
+                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">                            
+                            {{ house.tenant_name }} - {{ house.tenant_phone }}
                         </a>
+                        {% endif %}
                     </td>
                     <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
@@ -132,60 +142,45 @@
             <div class="mt-4 mb-6">
                 <!-- Modal title -->
                 <p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                    Create New Property
+                    Create New House Unit
                 </p>
                 <!-- Modal description -->
-
-                <label id="image-upload" class="block text-sm">
-                    <span class="text-gray-700 dark:text-gray-400">Property Picture</span>
-
-                    <form id="upload-form" method="POST" action="https://api.imgbb.com/1/upload?key={{ imgbb_key }}"
-                        enctype="multipart/form-data">
-                        <input
-                            class="block w-full pr-20 mt-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
-                            type="file" name="image" accept="image/*" onchange="uploadImage()" />
-                    </form>
-                </label>
                 <form method="POST">
-                    <input type="hidden" name="image" id="img_url" value="" />
                     <label class="block text-sm">
-                        <span class="text-gray-700 dark:text-gray-400">Landlord</span>
-                        <select name="landlord_id"
+                        <span class="text-gray-700 dark:text-gray-400">Property Name</span>
+                        <select name="property_id"
                             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
-                            {% for landlord in landlords %}
-                            <option value="{{ landlord.id }}" {{ 'selected' if request.args.get('landlord_id')==landlord.id }}>{{ landlord.name }}</option>
+                            {% for property in properties %}
+                            <option value="{{ property.id }}" {{ 'selected' if request.args.get('property_id')==property.id }}>{{ property.name }}</option>
                             {% endfor %}
                         </select>
                     </label>
                     <label class="block text-sm">
-                        <span class="text-gray-700 dark:text-gray-400">Property Name</span>
-                        <input
-                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            name="name" placeholder="Property Name" required />
+                        <span class="text-gray-700 dark:text-gray-400">House Type</span>
+                        <select name="house_type_id"
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+                            {% for house_type in house_types %}
+                            <option value="{{ house_type.id }}" {{ 'selected' if request.args.get('house_type_id')==house_type.id }}>{{ house_type.name }}</option>
+                            {% endfor %}
+                        </select>
                     </label>
                     <label class="block text-sm">
-                        <span class="text-gray-700 dark:text-gray-400">Location</span>
+                        <span class="text-gray-700 dark:text-gray-400">House No.</span>
                         <input
                             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            name="location" placeholder="Property Location" required />
+                            name="name" placeholder="House No." required />
                     </label>
                     <label class="block text-sm">
-                        <span class="text-gray-700 dark:text-gray-400">Town</span>
+                        <span class="text-gray-700 dark:text-gray-400">Rent Amount</span>
                         <input
                             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            name="town" placeholder="Town e.g Kilimani" required />
+                            name="rent_amount" placeholder="Amount e.g 10000" type="number" required />
                     </label>
                     <label class="block text-sm">
-                        <span class="text-gray-700 dark:text-gray-400">County</span>
+                        <span class="text-gray-700 dark:text-gray-400">Deposit Amount</span>
                         <input
                             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            name="county" placeholder="County e.g Nairobi" required />
-                    </label>
-                    <label class="block text-sm">
-                        <span class="text-gray-700 dark:text-gray-400">LR No.</span>
-                        <input
-                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            name="lr_no" placeholder="Property LR No." />
+                            name="deposit_amount" placeholder="Amount e.g 10000" type="number" required />
                     </label>
             </div>
             <footer

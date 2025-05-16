@@ -102,6 +102,5 @@ class Companies():
                 company_id = str(uuid.uuid4())
                 self.create(company_id, company_name, phone)
          
-        return render_template('companies.html', imgbb_key=os.getenv('IMGBB_API_KEY'),
-                               companies=self.fetch())
+        return render_template('companies.html', companies=self.fetch())
                

@@ -3,10 +3,10 @@
 {% block content %}
 <div class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
     <div class="flex items-center justify-between">
-        <h1>Companies</h1>
+        <h1>House Types</h1>
         <button @click="openModal"
             class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-            Add New Company
+            Add New House Type
         </button>
     </div>
 </div>
@@ -17,49 +17,29 @@
             <thead>
                 <tr
                     class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-                    <th class="px-4 py-3">Company Name</th>
-                    <th class="px-4 py-3">Landlords</th>
-                    <th class="px-4 py-3">Properties</th>
+                    <th class="px-4 py-3">House Type</th>
+                    <th class="px-4 py-3">Description</th>
                     <th class="px-4 py-3">House Units</th>
-                    <th class="px-4 py-3">Tenants</th>
                     <th class="px-4 py-3">Actions</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                {% for company in companies %}
+                {% for house_type in house_types %}
                 <tr class="text-gray-700 dark:text-gray-400">
                     <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
                             <div>
-                                <p class="font-semibold">{{ company.name }}</p>
-                                <p class="text-xs text-gray-600 dark:text-gray-400">
-                                    {{ company.phone }}
-                                </p>
+                                <p class="font-semibold">{{ house_type.name }}</p>
                             </div>
                         </div>
                     </td>
-                    <td class="px-4 py-3 text-sm items-center">
-                        <a href="{{ url_for('landlords', company_id=company.id) }}"
-                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                            {{ company.landlords }}
-                        </a>
+                    <td class="px-4 py-3">
+                        {{ house_type.description }}
                     </td>
                     <td class="px-4 py-3 text-sm items-center">
-                        <a href="{{ url_for('properties', company_id=company.id) }}"
+                        <a href="{{ url_for('houses', house_type_id=house_type.id) }}"
                             class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                            {{ company.properties }}
-                        </a>
-                    </td>
-                    <td class="px-4 py-3 text-sm items-center">
-                        <a href="{{ url_for('houses', company_id=company.id) }}"
-                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                            {{ company.houses }}
-                        </a>
-                    </td>
-                    <td class="px-4 py-3 text-sm items-center">
-                        <a href="{{ url_for('landlords', company_id=company.id) }}"
-                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                            {{ company.tenants }}
+                            {{ house_type.houses }}
                         </a>
                     </td>
                     <td class="px-4 py-3">
@@ -121,20 +101,20 @@
             <div class="mt-4 mb-6">
                 <!-- Modal title -->
                 <p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-                    Create New Company
+                    Add New House Type
                 </p>
                 <!-- Modal description -->
                 <label class="block text-sm">
-                    <span class="text-gray-700 dark:text-gray-400">Company Name</span>
+                    <span class="text-gray-700 dark:text-gray-400">House Type</span>
                     <input
                         class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                         name="name" placeholder="Company Name" required />
                 </label>
                 <label class="block text-sm">
-                    <span class="text-gray-700 dark:text-gray-400">Phone Number</span>
-                    <input
-                        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                        name="phone" placeholder="0712345678" type="number" required />
+                    <span class="text-gray-700 dark:text-gray-400">Description</span>
+                    <textarea class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-textarea"
+                        rows="3" placeholder="Description" name="description"
+                    ></textarea>
                 </label>
             </div>
             <footer
